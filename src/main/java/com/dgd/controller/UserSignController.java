@@ -3,8 +3,6 @@ package com.dgd.controller;
 import com.dgd.model.dto.user.SignInDto;
 import com.dgd.model.dto.user.SignUpDto;
 import com.dgd.model.entity.User;
-import com.dgd.repository.UserRepository;
-import com.dgd.service.TokenService;
 import com.dgd.service.UserSignService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,6 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserSignController {
     private final UserSignService userSignService;
-    private final TokenService tokenService;
 
     @PostMapping("/signup")
     public ResponseEntity<User> signUp(@RequestBody @Valid SignUpDto dto) {

@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -23,8 +24,7 @@ public class PetDto {
     @NotBlank
     private PetGender petGender;
     @NotBlank
-    private int petAge;
-    private String petProfileUrl;
+    private Date petAge;
     @Column(nullable = false)
     private PetSize petSize;
 

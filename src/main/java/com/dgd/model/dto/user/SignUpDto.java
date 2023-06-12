@@ -20,5 +20,4 @@ public class SignUpDto {
     @NotBlank
     private String password;
     private String location;
-    private String profileUrl;
 }

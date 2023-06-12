@@ -4,12 +4,13 @@ import com.dgd.model.type.PetGender;
 import com.dgd.model.type.PetSize;
 import com.dgd.model.type.PetType;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,12 +23,12 @@ public class Pet {
     @Column(nullable = false)
     private String petName;
     @Column(nullable = false)
-    private int petAge;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date petAge;
     @Enumerated(EnumType.STRING)
     private PetGender petGender;
     @Enumerated(EnumType.STRING)
     private PetSize petSize;
-    private String petProfileUrl;
     @Column(nullable = false)
     private Long userId;
 }

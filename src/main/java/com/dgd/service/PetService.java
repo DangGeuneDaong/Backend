@@ -30,7 +30,6 @@ public class PetService {
                 .petName(petDto.getPetName())
                 .petGender(petDto.getPetGender())
                 .petAge(petDto.getPetAge())
-                .petProfileUrl(petDto.getPetProfileUrl())
                 .petSize(petDto.getPetSize())
                 .build();
 
