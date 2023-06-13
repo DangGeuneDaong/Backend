@@ -1,6 +1,7 @@
 package com.dgd.security.jwt;
 
 import com.dgd.model.entity.User;
+import com.dgd.oauth2.generate.GeneratePassword;
 import com.dgd.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-        userRepository.findByRefreshToken(refreshToken)
+        userRepository.findByToken(refreshToken)
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
                     jwtTokenProvider.sendAccessAndRefreshToken(response, jwtTokenProvider.createAccessToken(user.getUserId()),
@@ -73,7 +74,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
         }
         checkAccessTokenAndAuthentication(request, response, filterChain);
-
     }
 
     /**
@@ -96,11 +96,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /** TODO
+     * 소셜 로그인한 유저는 ID, PASSWORD 를 임의로 부여받고,
+     * 주소, 닉네임값 새로 받아야됨
+     * @param user
+     */
     public void saveAuthentication(User user) {
         String password = user.getPassword();
+
         if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
             password = GeneratePassword.generateRandomPassword();
         }
+
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserId())

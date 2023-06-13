@@ -1,4 +1,4 @@
-package com.dgd.security.jwt;
+package com.dgd.oauth2.generate;
 
 import java.util.Random;
 

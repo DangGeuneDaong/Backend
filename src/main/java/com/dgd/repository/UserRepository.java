@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByNickName(String nickName);
 
-    Optional<User> findByRefreshToken(String token);
+    Optional<User> findByToken(String token);
 
     /** TODO
      * 소셜 타입과 소셜의 식별값으로 회원 찾기

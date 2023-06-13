@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolationException;
 
-import static com.dgd.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.dgd.exception.message.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @RestControllerAdvice

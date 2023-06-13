@@ -1,7 +1,6 @@
 package com.dgd.service;
 
 import com.dgd.exception.error.AuthenticationException;
-import com.dgd.exception.type.ErrorCode;
 import com.dgd.model.dto.pet.PetDto;
 import com.dgd.model.entity.Pet;
 import com.dgd.model.entity.User;
@@ -11,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.dgd.exception.type.ErrorCode.*;
+import static com.dgd.exception.message.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

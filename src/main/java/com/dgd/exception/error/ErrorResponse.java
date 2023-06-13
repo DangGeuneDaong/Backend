@@ -1,6 +1,6 @@
 package com.dgd.exception.error;
 
-import com.dgd.exception.type.ErrorCode;
+import com.dgd.exception.message.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;

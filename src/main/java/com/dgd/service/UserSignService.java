@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.dgd.exception.type.ErrorCode.*;
+import static com.dgd.exception.message.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +37,8 @@ public class UserSignService {
                 .userId(signUpDto.getUserId())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .location(signUpDto.getLocation())
-                .role(Role.USER)
                 .build();
+        user.authorizeUser();
 
         return userRepository.save(user);
     }
@@ -47,7 +47,7 @@ public class UserSignService {
         User user = userRepository.findByUserId(signInDto.getUserId())
                 .orElseThrow(() -> new AuthenticationException(USER_NOT_FOUND));
 
-        if(!user.getPassword().equals(signInDto.getPassword())) {
+        if(!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(MISMATCH_PASSWORD);
         }
     }

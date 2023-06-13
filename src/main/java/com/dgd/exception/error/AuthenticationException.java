@@ -1,7 +1,7 @@
 package com.dgd.exception.error;
 
 
-import com.dgd.exception.type.ErrorCode;
+import com.dgd.exception.message.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.dgd.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.dgd.exception.message.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +23,4 @@ public class UserDetailService implements UserDetailsService {
 
         return new UserDetail(user);
     }
-
 }

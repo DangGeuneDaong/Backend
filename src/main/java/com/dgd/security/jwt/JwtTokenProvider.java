@@ -3,10 +3,10 @@ package com.dgd.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.dgd.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +22,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Getter
 public class JwtTokenProvider {
     private final Long tokenValidTime = 6 * 60 * 60 * 1000L; // 6시간
     private final Long refreshTokenValidTime = 2 * 24 * 60 * 60 * 1000L; // 2 일
@@ -37,7 +38,6 @@ public class JwtTokenProvider {
     private static final String USER_ID = "userId";
     private static final String BEARER = "Bearer";
 
-    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
     public String createAccessToken(String userId) {
@@ -116,13 +116,12 @@ public class JwtTokenProvider {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-//    public void updateRefreshToken(String email, String refreshToken) {
-//        userRepository.findByEmail(email)
-//                .ifPresentOrElse(
-//                        user -> user.updateRefreshToken(refreshToken),
-//                        () -> new Exception("일치하는 회원이 없습니다.")
-//                );
-//    }
+    public void updateRefreshToken(String userId, String refreshToken) {
+        userRepository.findByUserId(userId)
+                .ifPresentOrElse(
+                        user -> user.updateRefreshToken(refreshToken),
+                        () -> new Exception("일치하는 회원이 없습니다."));
+    }
 
     public boolean isTokenValid(String token) {
         try {
