@@ -1,6 +1,5 @@
 package com.dgd.controller;
 
-import com.dgd.config.JwtTokenProvider;
 import com.dgd.model.dto.UpdateUserDto;
 import com.dgd.model.dto.UserSignInDto;
 import com.dgd.model.dto.UserSignUpDto;
@@ -42,8 +41,13 @@ public class UserController {
      * *** Refresh Token 은 재발급 안됨 ! ( 보안 > 편의 ) ***
      */
     @GetMapping("/token")
-    public ResponseEntity<?> getAccessToken() {
-
-        return null;
+    public ResponseEntity<?> getAccessToken(@RequestParam @Valid String userId) {
+        return ResponseEntity.ok(userService.getNewAccessToken(userId));
     }
+
+    @PostMapping("/logout")
+    public void logoutUser(@RequestParam @Valid String accessToken) {
+        userService.logout(accessToken);
+    }
+
 }

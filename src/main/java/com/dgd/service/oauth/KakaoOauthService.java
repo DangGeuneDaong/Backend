@@ -76,6 +76,7 @@ public class KakaoOauthService {
 
             BigInteger id = element.getAsJsonObject().get("id").getAsBigInteger();
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+            String profileUrl = element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image").getAsString();
             String nickName = "";
             if(hasEmail){
                 nickName = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
@@ -89,7 +90,7 @@ public class KakaoOauthService {
              */
 
             if (userRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, nickName).isEmpty()) {
-                saveUser(String.valueOf(id), nickName);
+                saveUser(String.valueOf(id), nickName, profileUrl);
 
 
                 Authentication authentication = authenticationManager.authenticate(
@@ -108,7 +109,7 @@ public class KakaoOauthService {
                         refreshTokenValidTime,
                         TimeUnit.MILLISECONDS);
 
-                return jwtTokenProvider.getPayload(accessToken);
+                return accessToken;
             } else if (userRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, nickName).isPresent()){
                 UserSignInDto dto = UserSignInDto.builder()
                                                 .userId(String.valueOf(id))
@@ -125,12 +126,13 @@ public class KakaoOauthService {
         return null;
     }
 
-    public void saveUser(String id, String nickName) {
+    public void saveUser(String id, String nickName, String profileUrl) {
         User user = User.builder()
                 .userId(id)
                 .password(passwordEncoder.encode(id))
                 .socialId(nickName)
                 .socialType(SocialType.KAKAO)
+                .profileUrl(profileUrl)
                 .role(Role.GUEST)
                 .build();
         userRepository.save(user);

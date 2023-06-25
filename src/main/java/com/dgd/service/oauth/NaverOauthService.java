@@ -74,13 +74,14 @@ public class NaverOauthService {
             JsonElement responseVal = element.getAsJsonObject().get("response");
             String userId = responseVal.getAsJsonObject().get("id").getAsString();
             String email = responseVal.getAsJsonObject().get("email").getAsString();
+            String profileUrl = responseVal.getAsJsonObject().get("profile_image").getAsString();
             /**
              * TODO
              * 프로필URL 추가
              */
 
             if (userRepository.findBySocialTypeAndSocialId(SocialType.NAVER, userId).isEmpty()) {
-                saveUser(String.valueOf(userId), email);
+                saveUser(String.valueOf(userId), email, profileUrl);
 
 
                 Authentication authentication = authenticationManager.authenticate(
@@ -102,7 +103,7 @@ public class NaverOauthService {
                 br.close();
 
 
-                return jwtTokenProvider.getPayload(accessToken);
+                return accessToken;
             } else if (userRepository.findBySocialTypeAndSocialId(SocialType.NAVER, email).isPresent()){
                 UserSignInDto dto = UserSignInDto.builder()
                         .userId(String.valueOf(email))
@@ -120,12 +121,13 @@ public class NaverOauthService {
         return null;
     }
 
-    public User saveUser(String userId, String email) {
+    public User saveUser(String userId, String email, String profileUrl) {
         User user = User.builder()
                 .userId(email)
                 .password(email.toString())
                 .socialId(userId)
                 .socialType(SocialType.NAVER)
+                .profileUrl(profileUrl)
                 .role(Role.GUEST)
                 .build();
         return userRepository.save(user);

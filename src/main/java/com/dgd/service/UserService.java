@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.dgd.exception.message.AuthErrorMessage.*;
@@ -88,7 +89,7 @@ public class UserService {
                 refreshTokenValidTime,
                 TimeUnit.MILLISECONDS);
 
-        return jwtTokenProvider.getPayload(accessToken);
+        return accessToken;
     }
 
     public String findSocialUserNickName(String socialId) { // 소셜 로그인한 사람의 소셜 이메일로 DB에서 유저의 닉네임을 검색
@@ -97,6 +98,10 @@ public class UserService {
         return userNickName;
     }
 
+    /**
+     * TODO
+     * MultiPartFile 추가해서 프로필 사진 추가하기
+     */
     public User updateUser(UpdateUserDto updateUserDto) {
         Point point = mapService.getMapString(updateUserDto.getLocation());
         double latitude = point.getLatitude();
@@ -112,5 +117,31 @@ public class UserService {
        return user;
     }
 
+    public String getNewAccessToken (String userId) {
+       String redisVal = redisTemplate.opsForValue().get(userId); // redis 에 userId 가 key 값인 refresh token
 
+        if (jwtTokenProvider.validateRefreshToken(redisVal)) {
+            String userPassword = userRepository.findByUserId(userId).get().getPassword();
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userId, userPassword));
+
+            return jwtTokenProvider.generateAccessToken(authentication);
+        } else {
+            throw new AuthenticationException(INVALID_TOKEN);
+        }
+    }
+
+    public void logout (String accessToken) {
+        if (jwtTokenProvider.validateAccessToken(accessToken)) {
+            throw new AuthenticationException(INVALID_TOKEN);
+        }
+
+        String userId = jwtTokenProvider.getPayloadSub(accessToken);
+        String refreshToken = redisTemplate.opsForValue().get(userId);
+
+        if (refreshToken != null) {
+            redisTemplate.delete(refreshToken);
+            redisTemplate.opsForValue().set(accessToken, "blacklist", jwtTokenProvider.getPayloadExp(accessToken));
+        }
+    }
 }
