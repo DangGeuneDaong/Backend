@@ -24,7 +24,7 @@ public class SharingApplicationService {
     private final SharingApplicationRepository sharingApplicationRepository;
     private final UserRepository userRepository;
     private final GoodRepository goodRepository;
-    private final ChatService chatService;
+    private final ChatRoomService chatRoomService;
 
     /**
      * 나눔 신청
@@ -53,11 +53,10 @@ public class SharingApplicationService {
         double distance = dis.getDistance(takerLat, takerLon, offerLat, offerLon);
         SharingApplication sharingApplication = sharingApplicationRepository.save(form.toEntity(good, user, distance));
         CreateChatRoomDto createChatRoomDto = CreateChatRoomDto.builder()
-                                                            .offerId(good.getUser().getUserId())
-                                                            .takerId(user.getUserId())
-                                                            .sharingApplicationId(sharingApplication.getId())
-                                                            .build();
-        chatService.createRoom(createChatRoomDto);
+                .sharingApplicationId(sharingApplication.getId())
+                .userId(user.getUserId())
+                .build();
+        chatRoomService.createChatRoom(createChatRoomDto);
     }
 
     /**

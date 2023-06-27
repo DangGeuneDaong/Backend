@@ -104,6 +104,9 @@ public class UserService {
 
         User user = userRepository.findById(updateUserDto.getId())
                .orElseThrow(() -> new AuthenticationException(USER_NOT_FOUND));
+        if (userRepository.existByNickName(updateUserDto.getNickName())) {
+            throw new AuthenticationException(DUPLICATED_NICKNAME);
+        }
 
         user.setLatAndLon(latitude, longitude);
         user.update(updateUserDto);

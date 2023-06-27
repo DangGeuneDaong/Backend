@@ -44,7 +44,9 @@ class SharingApplicationServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private ChatService chatService;
+    private ChatRoomService chatRoomService;
+
+
 
     @InjectMocks
     private SharingApplicationService sharingApplicationService;
@@ -52,7 +54,7 @@ class SharingApplicationServiceTest {
     @BeforeEach
     public void setUpTest(){
         sharingApplicationService = new SharingApplicationService(
-                sharingApplicationRepository,userRepository,goodRepository, chatService
+                sharingApplicationRepository,userRepository,goodRepository,chatRoomService
         );
     }
     @Test
